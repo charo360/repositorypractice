@@ -1,0 +1,172 @@
+---
+title: "Assign"
+author: "Samuel Mweni"
+date: "2/15/2023"
+output: word_document
+---
+
+
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+```
+#1 Use and show r code to import the Astronauts csv file.
+```{r}
+
+astron<- read.csv("Astronauts.csv")
+head(astron)
+
+```
+
+#2 Use and show r code to determine the number of Astronauts who are
+# in the data table and the number of descriptive column variables.
+
+```{r}
+dim(astron)
+```
+There are 357 astronauts and 19 descriptive column variables.
+
+
+# 3 Use and show r code to produce the number and the
+# names of only the female Astronauts.  
+```{r}
+astron%>%
+  filter(Gender=="Female")->fastron
+fastron
+```
+# 4 Use and show R coding to produce a table that shows the
+# military rank and the military branch of each Female Astronaut.
+```{r}
+fastron%>%
+  select(Military.Rank,Military.Branch)
+```
+# 5 Some of the Astronauts in the data table are listed as Active 
+# and others are not. Use and show r code to determine how many 
+# Female Astronauts were currently active when this data set was
+# constructed
+```{r}
+fastron%>%
+  filter(Status=="Active")->Hfastron
+count(Hfastron)
+```
+# 6 Use and show ggplot coding to produce a bar graph that compares
+# space walks for Male and Female Astronauts
+```{r}
+astron%>%
+  select(Gender,Space.Walks)->Mastron
+```
+
+```{r}
+# Create the bar graph
+ggplot(Mastron, aes(x = Gender, y = Space.Walks, fill = Gender)) +
+  geom_bar(stat = "identity", width = 0.5) +
+  ggtitle("Number of Spacewalks by Male and Female Astronauts") +
+  ylab("Number of Spacewalks") +
+  xlab("Gender")
+
+
+```
+# 7 Use and show r code to produce the table below that lists all
+# Female Astronauts who have registered one or more Space Walks.
+```{r}
+fastron%>%
+  filter(`Space.Walks`>= 1)%>%
+  group_by(Name,Gender, `Space.Walks`)%>%
+  arrange(Name)%>%
+  summarise(n=n())
+  
+```
+
+
+# 8  Use and show ggplot coding to produce a box plot in order to 
+# investigate outliers and the overall distribution for Space
+# Walks for males and female astronauts combined. Does the boxplot 
+# indicate that there are outliers? Using the boxplot, estimate the
+# IQR for the data.
+```{r}
+ggplot(astron, aes(x = "", y = Space.Walks)) +
+  geom_boxplot() +
+  ggtitle("Box Plot of Spacewalks  by Gender") +
+  ylab("SpaceWalks") +
+  xlab("Gender")
+
+IQR(astron$Space.Walks)
+```
+Yes, there are existence of outliers
+
+# 9 Use and show ggplot coding to produce side by side box plots
+# in order to investigate outliers and the overall distributions
+# for Space Walks for males and female astronauts separately
+```{r}
+ggplot(astron, aes(x = Gender, y = Space.Walks)) +
+  geom_boxplot() +
+  ggtitle("Box Plot of Spacewalks  by Gender") +
+  ylab("SpaceWalks") +
+  xlab("Gender")
+```
+
+
+
+# 10 The histogram displayed below shows that the Space Walks data
+# is generally skewed right for all Astronauts (males and females).
+# Use and show R code that will produce the histogram displayed.
+```{r}
+ggplot(astron, aes(x = Space.Walks)) +
+  geom_histogram(binwidth = 1.2, color = "black", fill = "red") +
+  ggtitle("The histogram displayed below shows that the Space Walks ") +
+  xlab("Space walks") +
+  ylab("Frequency")
+
+```
+
+
+# 11 Use and show R coding to calculate the average(mean) of
+# Space Walks for Male and Female Astronauts separately.
+```{r}
+
+mean(fastron$Space.Walks)
+```
+```{r}
+astron%>%
+  filter(Gender=="Male")->MaleAstron
+mean(MaleAstron$Space.Walks)
+```
+# 12 Does a linear relationship exist between Space Flights and
+# Space Walks ? Investigate by using and showing ggplot coding to
+# produce a scatter plot.  Comment on your findings based on the
+# configuration of the scatter plot data points.
+```{r}
+ggplot(astron, aes(x = Space.Walks, y =Space.Flights)) +
+  geom_point() +
+  ggtitle("Scatter Plot of X vs Y") +
+  xlab("Space walsks") +
+  ylab("Space flight")
+
+```
+There is no linear relationship between spacewalks and space flights 
+
+# 13 Mae C. Jemison was the first African American female Astronaut.
+# Use and show R code that will output her Undergraduate Major,
+# Graduate Major, and Alma Mater.
+```{r}
+fastron%>%
+  filter(Name=="Mae C. Jemison")%>%
+  select(Undergraduate.Major,Graduate.Major,Alma.Mater)
+  
+
+```
+# 14 Use and show R code to determine how many female
+# Astronauts were members of the US Air Force or retired
+# from the US Air Force at the time that the data set was
+# generated.
+```{r}
+astron2 <- fastron%>%
+  filter(Gender=="Female")%>%
+  filter(`Military.Branch`=="US Air Force" | `Military.Branch`=="US Air Force (Retired)")
+count(astron2)
+
+```
+
+
